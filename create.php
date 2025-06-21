@@ -1,17 +1,13 @@
 <?php
-include_once 'config.php';
+require_once 'config.php';
+include_once 'functions.php';
+
 $mensaje = '';
 if (isset($_POST['guardar'])) {
-    $nombre = $_POST['nombre'];
-    $precio = $_POST['precio'];
-    $sql = "INSERT INTO producto (nombre, precio) VALUES ('$nombre', '$precio')";
-    if (mysqli_query($conexion, $sql)) {
-        $mensaje = 'Producto agregado correctamente.';
-    } else {
-        $mensaje = 'Error al agregar producto.';
-    }
+    $mensaje = crearProducto($conexion, $_POST['nombre'], $_POST['precio']);
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

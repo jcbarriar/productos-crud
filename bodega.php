@@ -8,9 +8,9 @@ if (isset($_POST['agregar'])) {
 }
 
 if (isset($_GET['eliminar'])) {
-    $id = $_GET['eliminar'];
-    mysqli_query($conexion, "DELETE FROM bodega WHERE id_bodega=$id");
+    eliminarBodega($conexion, $_GET['eliminar']);
 }
+
 $bodegas = mysqli_query($conexion, "SELECT * FROM bodega");
 ?>
 <!DOCTYPE html>
@@ -40,16 +40,21 @@ $bodegas = mysqli_query($conexion, "SELECT * FROM bodega");
             </tr>
         </thead>
         <tbody>
-        <?php while($bodega = mysqli_fetch_assoc($bodegas)) { ?>
+        <?php if (mysqli_num_rows($bodegas) == 0): ?>
             <tr>
-                <td><?= $bodega['id_bodega'] ?></td>
-                <td><?= $bodega['nombre'] ?></td>
-                <td>
-                    <!-- Edición rápida: solo eliminar por ahora -->
-                    <a href="?eliminar=<?= $bodega['id_bodega'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar bodega?')"><i class='bi bi-trash me-2'></i>Eliminar</a>
-                </td>
+                <td colspan="3" class="text-center">No hay bodegas registradas.</td>
             </tr>
-        <?php } ?>
+        <?php else: ?>
+            <?php foreach ($bodegas as $bodega): ?>
+                <tr>
+                    <td><?= $bodega['id_bodega'] ?></td>
+                    <td><?= $bodega['nombre'] ?></td>
+                    <td>
+                        <a href="?eliminar=<?= $bodega['id_bodega'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar bodega?')"><i class='bi bi-trash me-2'></i>Eliminar</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
         </tbody>
     </table>
 </div>

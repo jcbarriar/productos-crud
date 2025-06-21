@@ -1,6 +1,16 @@
 <?php
 
 require_once 'config.php';
+include_once 'functions.php';
+
+$productos = mysqli_query($conexion, "SELECT * FROM producto");
+
+if (isset($_GET['eliminar'])){
+    eliminarProducto($conexion, $_GET['eliminar']);
+    header("Location: index.php");
+    exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -34,22 +44,23 @@ require_once 'config.php';
             </tr>
         </thead>
         <tbody>
-            <?php
-            $query = "SELECT * FROM producto";
-            $result = mysqli_query($conexion, $query);
-
-            while ($row = mysqli_fetch_assoc($result)) {
-                echo "<tr>";
-                echo "<td>" . $row['id_producto'] . "</td>";
-                echo "<td>" . $row['nombre'] . "</td>";
-                echo "<td>$" . number_format($row['precio'], 0, ',', '.') . "</td>";
-                echo "<td>";
-                echo "<a href='update.php?id=" . $row['id_producto'] . "' class='btn btn-warning btn-sm'><i class='bi bi-pen me-2'></i>Editar</a> ";
-                echo "<a href='delete.php?id=" . $row['id_producto'] . "' class='btn btn-danger btn-sm'><i class='bi bi-trash me-2'></i>Eliminar</a>";
-                echo "</td>";
-                echo "</tr>";
-            }
-            ?>
+            <?php if (mysqli_num_rows($productos) == 0): ?>
+                <tr>
+                    <td colspan="4" class="text-center">No hay productos registrados.</td>
+                </tr>
+            <?php else: ?>
+                <?php foreach ($productos as $producto): ?>
+                    <tr>
+                        <td><?php echo $producto['id_producto']; ?></td>
+                        <td><?php echo $producto['nombre']; ?></td>
+                        <td>$<?php echo number_format($producto['precio'], 0, ',', '.'); ?></td>
+                        <td>
+                            <a href="update.php?id=<?php echo $producto['id_producto']; ?>" class="btn btn-warning btn-sm"><i class="bi bi-pen me-2"></i>Editar</a>
+                            <a href="?eliminar=<?= $producto['id_producto'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar producto?')"><i class='bi bi-trash me-2'></i>Eliminar</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
 
