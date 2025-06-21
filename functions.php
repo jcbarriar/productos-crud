@@ -41,4 +41,9 @@ function editarProducto($conexion, $id, $nombre, $precio) {
     return mysqli_query($conexion, $sql);
 }
 
+function editarBodega($conexion, $id, $nombre) {
+    $sql = "UPDATE bodega SET nombre='$nombre' WHERE id_bodega = $id";
+    return mysqli_query($conexion, $sql);
+}
+
 ?>
