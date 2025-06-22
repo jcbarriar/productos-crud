@@ -28,12 +28,6 @@ Una aplicación web simple y funcional para gestionar productos y bodegas, que p
 
    Si usas Laragon, coloca la carpeta en el directorio `www` y accede desde [http://localhost/productos-crud](http://localhost/productos-crud).
 
-   O puedes usar el servidor embebido de PHP:
-
-   ```
-   php -S localhost:8000 -t public
-   ```
-
 ## Uso
 
 - Accede a la aplicación desde tu navegador.
