@@ -51,6 +51,66 @@ $bodegas = mysqli_query($conexion, "SELECT * FROM bodega");
             <?php endif; ?>
         </div>
     </form>
+    <?php
+    if (isset($bodega_editar)):
+        $productos = mysqli_query($conexion, "SELECT * FROM producto");
+        if (isset($_POST['agregar_stock'])) {
+            $id_bodega = intval($_POST['id_bodega']);
+            agregarStockBodega($conexion, $id_bodega, intval($_POST['id_producto']), intval($_POST['cantidad']));
+            header("Location: bodega.php?editar=$id_bodega");
+            exit();
+        }
+    ?>
+    <div class="card mb-3">
+        <div class="card-header">Agregar stock a esta bodega</div>
+        <div class="card-body">
+            <form method="post" class="row g-2">
+                <input type="hidden" name="id_bodega" value="<?= $bodega_editar['id_bodega'] ?>">
+                <div class="col-md-5">
+                    <select name="id_producto" class="form-select" required>
+                        <option value="">Seleccione producto</option>
+                        <?php foreach ($productos as $producto): ?>
+                            <option value="<?= $producto['id_producto'] ?>"><?= htmlspecialchars($producto['nombre']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="number" name="cantidad" class="form-control" min="1" placeholder="Cantidad" required>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" name="agregar_stock" class="btn btn-success">Agregar Stock</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card mb-3">
+        <div class="card-header">Stock actual en esta bodega</div>
+        <div class="card-body p-0">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                $stock = mysqli_query($conexion, "SELECT p.nombre, s.cantidad FROM stock s JOIN producto p ON s.id_producto = p.id_producto WHERE s.id_bodega = {$bodega_editar['id_bodega']}");
+                if (mysqli_num_rows($stock) == 0): ?>
+                    <tr><td colspan="2" class="text-center">Sin stock registrado.</td></tr>
+                <?php else:
+                    foreach ($stock as $fila): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($fila['nombre']) ?></td>
+                            <td><?= $fila['cantidad'] ?></td>
+                        </tr>
+                    <?php endforeach;
+                endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php endif; ?>
     <table class="table table-bordered">
         <thead>
             <tr>

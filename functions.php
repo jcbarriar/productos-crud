@@ -46,4 +46,13 @@ function editarBodega($conexion, $id, $nombre) {
     return mysqli_query($conexion, $sql);
 }
 
+function agregarStockBodega($conexion, $id_bodega, $id_producto, $cantidad) {
+    $existe = mysqli_query($conexion, "SELECT * FROM stock WHERE id_bodega=$id_bodega AND id_producto=$id_producto");
+    if (mysqli_num_rows($existe) > 0) {
+        return mysqli_query($conexion, "UPDATE stock SET cantidad = cantidad + $cantidad WHERE id_bodega=$id_bodega AND id_producto=$id_producto");
+    } else {
+        return mysqli_query($conexion, "INSERT INTO stock (id_bodega, id_producto, cantidad) VALUES ($id_bodega, $id_producto, $cantidad)");
+    }
+}
+
 ?>
